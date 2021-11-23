@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: rebeccapurple;
+        }
+        #my-btn{
+            margin-left: -5px;
+        }
+        #all{
+            margin-top: 160px;
+        }
+    </style>
+</head>
+<body>
+    <div id="all" class="container">
+        <div class="d-flex justify-content-center  mt-5">
+            <div class="col-md-4">
+                <input  type="text" name="" id="city-name" class="form-control" placeholder="Enter a location for weather...">
+            </div>
+            <div class="ml-5">
+                <button id="my-btn" class="btn btn-danger" onclick="getWeather()">Search</button>
+            </div>
+        </div>
+        <div class="weather-status text-white text-center mt-5">
+            <img id="weather-icon" alt="">
+            <h1 id="location-show">Dhaka</h1>
+            <h3><span id="temp-show">38.06</span>&deg;C</h3>
+            <h1 id="weather-show" class="lead">Clouds</h1>
+        </div>
+    </div>
+
+
+    <script>
+        
+        const input = document.getElementById("city-name");
+        input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("my-btn").click();
+            }
+        });
+
+        getLocation();
+        setTimeout(() => {
+            getWeather();
+        }, 100);
+        function getWeather() {
+            const apiKey = `96e76c81f551ed400dba4652481d5612`
+            let city = '';
+            const cityName = document.getElementById('city-name').value;
+            if (cityName == '' || cityName == null){
+                city = document.getElementById('location-show').innerText;
+            }
+            else{
+                city = document.getElementById('city-name').value;
+            }
+            
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+            fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                
+                document.getElementById('location-show').innerText = data.name;
+                document.getElementById('temp-show').innerText = data.main.temp;
+                document.getElementById('weather-show').innerText = data.weather[0].main;
+                const imgUrl = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+                const imageIcon = document.getElementById('weather-icon');
+                imageIcon.setAttribute('src', imgUrl);
+                document.getElementById('city-name').value = null;
+
+            })
+
+        }
+
+        function getLocation() {
+            fetch('https://api.db-ip.com/v2/free/self')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('city-name').value = data.countryName;
+            })
+        }
+
+        document.addEventListener('click', function(e) { 
+         if(document.activeElement.toString() == '[object HTMLButtonElement]'){ 
+            document.activeElement.blur(); 
+         } 
+        })
+        
+    </script>
+</body>
+</html>
