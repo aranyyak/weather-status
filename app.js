@@ -9,7 +9,7 @@ const input = document.getElementById("city-name");
         getLocation();
         setTimeout(() => {
             getWeather();
-        }, 100);
+        }, 1000);
         function getWeather() {
             const apiKey = `96e76c81f551ed400dba4652481d5612`
             let city = '';
